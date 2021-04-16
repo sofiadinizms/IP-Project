@@ -150,7 +150,7 @@ def check_lost(positions):
     pass
 
 def get_shape():
-    return random.choice(shapes)
+    return Piece(5, 0, random.choice(shapes))
 
 def draw_text_middle(text, size, color, surface):  
     pass
@@ -183,10 +183,47 @@ def draw_window(surface, grid):
     pygame.display.update()
 
 
-def main():
-    pass
+def main(win):
 
-def main_menu():
-    pass
+    locked_positions = {}
+    grid = create_grid(locked_positions)
 
-main_menu()  # start game
+    change_piece = False
+    run = True
+    current_piece = get_shape()
+    next_piece = get_shape()
+    clock = pygame.time.Clock()
+    fall_time = 0
+
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    current_piece.x -= 1
+                    if not (valid_space(current_piece, grid)):
+                        current_piece += 1
+                if event.key == pygame.K_RIGHT:
+                    current_piece.x += 1
+                    if not (valid_space(current_piece, grid)):
+                        current_piece -= 1                    
+                if event.key == pygame.K_DOWN:
+                    current_piece.y += 1
+                    if not (valid_space(current_piece, grid)):
+                        current_piece.y -= 1                    
+                if event.key == pygame.K_UP:
+                    current_piece.rotation += 1
+                    if not (valid_space(current_piece, grid)):
+                        current_piece -= 1
+
+        draw_window(win, grid)
+
+
+def main_menu(win):
+    main(win)
+
+win = pygame.display.set_mode((s_width, s_height))
+pygame.display.set_caption('Tetris')
+main_menu(win)  # start game
