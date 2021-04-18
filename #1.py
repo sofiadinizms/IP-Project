@@ -152,8 +152,6 @@ def convert_shape_format(shape):
  
     for i, pos in enumerate(positions):
         positions[i] = (pos[0] - 2, pos[1] - 4)
- 
-    return positions
 
 def valid_space(shape, grid):
     pass
