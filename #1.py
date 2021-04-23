@@ -126,7 +126,7 @@ class Piece(object):
         self.x = x
         self.y = y
         self.shape = shape
-        self.color = shape_colors[shape.index(shape)]
+        self.shape_color = shape_colors[shapes.index(shape)]
         self.rotation = 0
 
 
@@ -295,12 +295,12 @@ def main(win):
         for i in range(len(shape_pos)):
             x, y = shape_pos[i]
             if y > -1:  # If we are not above the screen
-                grid[y][x] = current_piece.color
+                grid[y][x] = current_piece.shape_color
         # IF PIECE HIT GROUND
         if change_piece:
             for pos in shape_pos:
                 p = (pos[0], pos[1])
-                locked_positions[p] = current_piece.color
+                locked_positions[p] = current_piece.shape_color
             current_piece = next_piece
             next_piece = get_shape()
             change_piece = False
