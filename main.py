@@ -134,6 +134,8 @@ class Piece(object):
         self.shape_color = shape_colors[shapes.index(shape)]
         self.rotation = 0
 
+
+# Creating background for  our game grid
 def create_grid(locked_positions={}):
     grid = [[(63, 63, 63) for x in range(10)] for x in range(20)]
 
@@ -145,6 +147,7 @@ def create_grid(locked_positions={}):
     return grid
 
 
+# Creating actual pieces from the piece list
 def convert_shape_format(shape):
     positions = []
     format = shape.shape[shape.rotation % len(shape.shape)]
@@ -160,6 +163,7 @@ def convert_shape_format(shape):
     return positions
 
 
+# Checking if a certain space is stil valid (aka if there aren't any tetris pieces there)
 def valid_space(shape, grid):
     accepted_pos = [[(j, i) for j in range(10) if grid[i][j] == (63, 63, 63)] for i in range(20)]
     accepted_pos = [j for sub in accepted_pos for j in sub]
@@ -173,6 +177,7 @@ def valid_space(shape, grid):
     return True
 
 
+# Check if player lost
 def check_lost(positions):
     for pos in positions:
         x, y = pos
@@ -182,16 +187,12 @@ def check_lost(positions):
     return False
 
 
+# Getting a random shape from our list
 def get_shape():
     return Piece(5, 0, random.choice(shapes))
 
-def draw_map(surface, x, y, count):
-    count += 1
-    if count == 2:
-        map = pygame.image.load('assets/map.png')
-        surface.blit(map, (random.randrange(x, x + 245), random.randrange(y, y + 560)))
 
-
+# Drawing and make the maps and keys colisions with the shapes
 def draw_objects(count, coordinate_x, coordinate_y, grid, map_score, key_score):
     validation = 0
     print(map_score, key_score)
@@ -226,8 +227,8 @@ def draw_objects(count, coordinate_x, coordinate_y, grid, map_score, key_score):
     return count, coordinate_x, coordinate_y, map_score, key_score
 
 
-
-def draw_grid(surface, grid, count):
+# Drawing the lines of the game grid
+def draw_grid(surface, grid):
     sx = top_left_x
     sy = top_left_y
 
@@ -238,6 +239,7 @@ def draw_grid(surface, grid, count):
                              (sx + j * block_size, sy + play_height))
 
 
+# Clearing a row when its full
 def clear_rows(grid, locked):
     inc = 0
     for i in range(len(grid) - 1, -1, -1):
@@ -259,6 +261,7 @@ def clear_rows(grid, locked):
     return inc
 
 
+# Creating the standard background every screen has
 def background(surface):
     surface.fill((168, 232, 236))
 
@@ -284,7 +287,7 @@ def background(surface):
     surface.blit(yellow, ((top_left_x + play_width / 2) - (yellow.get_width() / 2), 0))
 
 
-
+# Drawing our game window
 def draw_window(surface, grid, map_score, key_score, count):
     surface.fill((168, 232, 236))
 
@@ -314,10 +317,11 @@ def draw_window(surface, grid, map_score, key_score, count):
                              (top_left_x + j * block_size, top_left_y + i * block_size, block_size, block_size), 0)
 
     pygame.draw.rect(surface, (63, 63, 63), (top_left_x, top_left_y, play_width, play_height), 4)
-    draw_grid(surface, grid, count)
+    draw_grid(surface, grid)
     pygame.display.update()
 
 
+# Drawing the text in the middle of the screen
 def draw_text_middle(surface, text, size, color):
     font = pygame.font.SysFont("comicsans", size)
     label = font.render(text, 1, color)
@@ -325,6 +329,7 @@ def draw_text_middle(surface, text, size, color):
     surface.blit(label, (top_left_x + play_width /2 - (label.get_width()/2), 320))
 
 
+# Actual game loop
 def main(win):
     locked_positions = {}
     grid = create_grid(locked_positions)
@@ -351,6 +356,7 @@ def main(win):
         level_time += clock.get_rawtime()
         count += 1
 
+        # Making pieces go faster as time pases by
         if level_time/1000 > 40:
             level_time = 0
             if fall_speed > 0.12:
@@ -394,6 +400,7 @@ def main(win):
             x, y = shape_pos[i]
             if y > -1:  # If we are not above the screen
                 grid[y][x] = current_piece.shape_color
+
         # IF PIECE HIT GROUND
         if change_piece:
             for pos in shape_pos:
@@ -407,8 +414,7 @@ def main(win):
         draw_window(win, grid, key_score[1], map_score[1], count)
         count, coordinate_x, coordinate_y, map_score, key_score = draw_objects(count, coordinate_x, coordinate_y, grid, map_score, key_score)
 
-
-        #Check if user lost
+        # Check if user lost and if so, draw the loser screen
         if check_lost(locked_positions):
             background(win)
             modal = pygame.image.load('assets/game_over.png')
@@ -421,6 +427,7 @@ def main(win):
             pygame.time.delay(6000)
             run = False
 
+        # Check if user won and if so, draw the victory screen
         if ((key_score[1] == 5) and (map_score[1] == 5)):
             draw_text_middle(win, "Boa, pirata!", 60, (255, 255, 255))
             modal = pygame.image.load('assets/game_over.png')
@@ -437,7 +444,7 @@ def main(win):
             run = False
 
 
-
+# Home screen function
 def main_menu(win):
     run = True
     while run:
