@@ -361,6 +361,8 @@ def main(win):
     locked_positions = {}
     grid = create_grid(locked_positions)
     level_time = 0
+    map_count = 1
+    key_count = 1
 
     change_piece = False
     run = True
@@ -451,11 +453,28 @@ def main(win):
             pygame.time.delay(8000)
             run = False
 
+        if key_count == 0 and map_count == 0:
+            background(win)
+            modal = pygame.image.load('assets/game_over.png')
+            win.blit(modal, (280, 250))
+            draw_text_middle(win, "Vitória!", 60, (255, 255, 255))
+            pygame.display.update()
+            pygame.time.delay(8000)
+            run = False
+            title_font = pygame.font.SysFont('Roboto', 60)
+            w_button = title_font.render('Pressione', 1, (255, 255, 255))
+            win.blit(w_button, (top_left_x + play_width / 2 - (w_button.get_width() / 2), 55))
+            pygame.display.update()
+
+
 
 
 def main_menu(win):
     run = True
+
     while run:
+        draw_text_middle(win, "Piratas de BV", 60, (255, 255, 255))
+        pygame.display.update()
         win.fill((0,0,0))
         background(win)
         blue_background = pygame.image.load('assets/blue_background.png')
